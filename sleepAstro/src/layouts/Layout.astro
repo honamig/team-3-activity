@@ -1,9 +1,17 @@
+---
+import '../css/style.css';
+
+let {title} = Astro.props;
+
+
+---
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sleep Outside | Home</title>
+    <title>{title}</title>
     <link rel="stylesheet" href="/css/style.css" />
     <!-- <script type="module" src="js/main.ts"></script> -->
   </head>
@@ -32,7 +40,7 @@
         </div>
         <div class="cart">
           <a
-            href="/cart/"
+            href="/cart"
             aria-label="Shopping Cart"
             title="Shopping Cart"
           >
