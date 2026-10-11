@@ -1,7 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { type CollectionEntry, getCollection } from "astro:content";
-
+// import { getData } from "../../js/productData.mts";
 // map though all products to create a page for each one
 export async function getStaticPaths() {
   const products = await getCollection("products");
@@ -11,6 +11,16 @@ export async function getStaticPaths() {
     props: product,
   }));
 }
+
+// export async function getStaticPaths() {
+//   const products = await getData();
+
+//   return products.map((product) => ({
+//     params: { id: product.id },
+//     props: { product },
+//   }));
+// }
+
 
 type Props = CollectionEntry<"products">;
 
