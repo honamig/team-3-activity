@@ -1,0 +1,17 @@
+
+.category-grid {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    
+
+    img {
+        width: 80px;
+    }
+}
+
+.category-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
