@@ -27,6 +27,36 @@ const title = "Homepage"
           comfortably at an affordable price.
         </p>
       </section>
+        <section class="categories">
+          <a class="category-card" href="/product-list/?category=tents">
+            <img
+              src="https://wdd360.netlify.app/images/category-icons/noun_Tent_3544767.svg"
+              alt="Tent Icon from Noun Project: Mustofa Bayu"
+            />
+            <h3>Tents</h3>
+          </a>
+          <a class="category-card" href="/product-list/?category=backpacks">
+            <img
+              src="https://wdd360.netlify.app/images/category-icons/noun_carrier_bag_3544771.svg"
+              alt="Backpack Icon from Noun Project: Mustofa Bayu"
+            />
+            <h3>Backpacks</h3>
+          </a>
+          <a class="category-card" href="/product-list/?category=sleeping-bags">
+            <img
+              src="https://wdd360.netlify.app/images/category-icons/noun_Sleeping_Bag_3544775.svg"
+              alt="Sleeping Bag Icon from Noun Project: Mustofa Bayu"
+            />
+            <h3>Sleeping Bags</h3>
+          </a>
+          <a class="category-card" href="/product-list/?category=hammocks">
+            <img
+              src="https://wdd360.netlify.app/images/category-icons/noun_Hammock_791143.svg"
+              alt="Hammock Icon from Noun Project: Paul Richard"
+            />
+            <h3>Hammocks</h3>
+          </a>
+      </section>
       <section class="products">
         <h2>Top Products</h2>
         <ul class="product-list">
@@ -79,4 +109,29 @@ const title = "Homepage"
       </section>
     </main>
 	<script src="../js/main.ts"></script>
+  <style>
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem .5rem;
+      text-align: center;
+    }
+
+    .category-card {
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .3rem;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .category-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+
+  </style>
 </Layout>
