@@ -296,3 +296,20 @@ footer {
   font-size: var(--small-font);
   padding: 1em;
 }
+
+/* Arrange the sorting label and dropdown side by side. */
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 1rem 0;
+}
+
+/* Make the dropdown easy to read and use. */
+.sort-container select {
+  padding: 8px 12px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 1rem;
+}
