@@ -1,8 +1,8 @@
-import type {Product} from "./types.mts"
+import type { Product } from "./types.mts";
 
-const baseURL = import.meta.env.PUBLIC_SERVER_URL
+const baseUrl = import.meta.env.PUBLIC_SERVER_URL;
 
-function convertToJson(res:Response) {
+function convertToJson(res: Response) {
   if (res.ok) {
     return res.json();
   } else {
@@ -11,17 +11,15 @@ function convertToJson(res:Response) {
 }
 
 export async function getProducts(category = "tents") {
-  const response = await fetch(baseURL + `products?category=${category}`)
-  const products = await convertToJson(response)
-  console.log(products)
-  return products
+  const response = await fetch(baseUrl + `products?category=${category}`);
+  const products = await convertToJson(response);
+  console.log(products);
+  return products;
 }
 
-
-
-export async function findProductById(id:string) {
-  const response = await fetch(baseURL + `products/${id}`)
-  const product = await convertToJson(response)
-  console.log(product)
-  return product
+export async function findProductById(id: string) {
+  const response = await fetch(baseUrl + `products/${id}`);
+  const product = await convertToJson(response);
+  console.log(product);
+  return product;
 }

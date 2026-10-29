@@ -1,4 +1,3 @@
-// Product schema
 export interface Product {
   _id: string;
   id: string;
