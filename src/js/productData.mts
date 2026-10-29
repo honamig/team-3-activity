@@ -1,8 +1,8 @@
-import type {Product} from "./types.mts"
+import type { Product } from "./types.mts";
 
-const baseURL = import.meta.env.PUBLIC_SERVER_URL
+const baseUrl = import.meta.env.BASE_URL;
 
-function convertToJson(res:Response) {
+function convertToJson(res: Response) {
   if (res.ok) {
     return res.json();
   } else {
