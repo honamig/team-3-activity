@@ -6,20 +6,13 @@ import { type CollectionEntry, getCollection } from "astro:content";
 export async function getStaticPaths() {
   const products = await getCollection("products");
 
-  return products.map((product: CollectionEntry<"products">) => ({
+  const fullProducts = products.map((product: CollectionEntry<"products">) => ({
     params: { id: product.id },
     props: product,
   }));
+  // console.log(JSON.stringify(fullProducts));
+  return fullProducts;
 }
-
-// export async function getStaticPaths() {
-//   const products = await getData();
-
-//   return products.map((product) => ({
-//     params: { id: product.id },
-//     props: { product },
-//   }));
-// }
 
 type Props = CollectionEntry<"products">;
 
