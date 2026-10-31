@@ -1,4 +1,5 @@
 ---
+import type { Product } from "../../js/types.mts";
 import Layout from "../../layouts/Layout.astro";
 import { type CollectionEntry, getCollection } from "astro:content";
 
@@ -26,6 +27,18 @@ type Props = CollectionEntry<"products">;
 // get the product data from the props to use in the template below. The actual data is in product.data
 const product = Astro.props;
 const title = product.data.name;
+
+//todo: add discount price
+
+function getDiscount(product: CollectionEntry<"products">) {
+  const original = product.data.suggestedRetailPrice;
+  const final = product.data.finalPrice;
+
+  if (!original || original <= final) return null;
+  return Math.round(((original - final) / original) * 100);
+}
+
+const discount = getDiscount(product);
 ---
 
 <Layout title={title}>
@@ -42,9 +55,12 @@ const title = product.data.name;
       alt={product.data.name}
     />
 
-    <p class="product-card__price">${product.data.listPrice}</p>
+    <p class="product-card__price">
+      Price: ${product.data.listPrice}
+      {discount && <span class="product-card__discount">-{discount}%</span>}
+    </p>
 
-    <p class="product__color">{product.data.colors[0].colorName}</p>
+    <p class="product__color">Color: {product.data.colors[0].colorName}</p>
 
     <p class="product__description">
       {product.data.description}
@@ -55,3 +71,13 @@ const title = product.data.name;
     </div>
   </section>
 </Layout>
+
+<style>
+  .product-card__discount {
+    background-color: red;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 10px;
+    margin-left: 10px;
+  }
+</style>
