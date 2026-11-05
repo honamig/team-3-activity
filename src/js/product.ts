@@ -6,6 +6,9 @@ function addProductToCart(product: Product) {
   const cart = getLocalStorage("so-cart") || [];
   cart.push(product);
   setLocalStorage("so-cart", cart);
+
+  // Update the cart number immediately.
+  window.dispatchEvent(new Event("cart-updated"));
 }
 
 // add to cart button event handler
@@ -15,10 +18,14 @@ async function addToCartHandler(e: Event) {
     const product = await findProductById(target.dataset.id);
     addProductToCart(product);
   }
-
 }
+
+
+
 
 // add listener to Add to Cart button
 document
   .getElementById("addToCart")
   ?.addEventListener("click", addToCartHandler);
+
+
