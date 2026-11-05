@@ -18,10 +18,14 @@ async function addToCartHandler(e: Event) {
     const product = await findProductById(target.dataset.id);
     addProductToCart(product);
   }
-
 }
+
+
+
 
 // add listener to Add to Cart button
 document
   .getElementById("addToCart")
   ?.addEventListener("click", addToCartHandler);
+
+
