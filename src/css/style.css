@@ -312,4 +312,33 @@ footer {
   border-radius: 5px;
   background-color: white;
   font-size: 1rem;
+
+/* position the cart badge relative to the backpack icon. */
+.cart a {
+  position: relative;
+  display: inline-block;
+}
+
+/* style the cart count as a small red circle. */
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #c62828;
+  color: white;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+
+/* hide the badge when the cart has no items. */
+.cart-count[hidden] {
+  display: none;
 }
