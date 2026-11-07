@@ -15,9 +15,30 @@ function renderCartContents() {
         removeFromCartHandler(e);
       });
     });
+
+    // increase quantity when the + button is clicked.
+    listEl?.querySelectorAll(".increase-qty-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const productId = (btn as HTMLButtonElement).dataset.id;
+
+        if (productId) {
+          updateQuantity(productId, 1);
+        }
+      });
+    });
+
+    // decrease quantity when the - button is clicked.
+    listEl?.querySelectorAll(".decrease-qty-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const productId = (btn as HTMLButtonElement).dataset.id;
+
+        if (productId) {
+          updateQuantity(productId, -1);
+        }
+      });
+    });
   }
 }
-
 function cartItemTemplate(item: Product) {
   const newItem = `<li class="cart-card divider">
 
@@ -31,7 +52,14 @@ function cartItemTemplate(item: Product) {
     <h2 class="card__name">${item.name}</h2>
   </a>
   <p class="cart-card__color">${item.colors[0].colorName}</p>
-  <p class="cart-card__quantity">qty: 1</p>
+
+<div class="cart-card__quantity">
+    <button class="decrease-qty-btn" data-id="${item.id}" aria-label="Decrease quantity">−</button>
+    <span>Qty: ${item.quantity ?? 1}</span>
+    <button class="increase-qty-btn" data-id="${item.id}" aria-label="Increase quantity">+</button>
+  </div>
+
+
   <p class="cart-card__price">$${item.finalPrice}</p>
   <button data-id=${item.id} class="remove-cart-item-btn">X</button>
   
@@ -39,6 +67,34 @@ function cartItemTemplate(item: Product) {
 
   return newItem;
 }
+
+
+// increase or decrease the quantity of a product in the cart.
+function updateQuantity(productId: string, change: number) {
+  const cart: Product[] = getLocalStorage("so-cart") || [];
+
+  const updatedCart = cart.map((item) => {
+    if (item.id === productId) {
+      const newQuantity = Math.max(1, (item.quantity ?? 1) + change);
+
+      return {
+        ...item,
+        quantity: newQuantity,
+      };
+    }
+
+    return item;
+  });
+
+  // save the updated quantities.
+  setLocalStorage("so-cart", updatedCart);
+
+  // refresh the cart display.
+  renderCartContents();
+}
+
+
+
 
 function removeProductFromCart(product: Product) {
   const cart = getLocalStorage("so-cart") || [];
