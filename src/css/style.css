@@ -245,7 +245,8 @@ button {
 /* Start cart list card styles */
 .cart-card {
   display: grid;
-  grid-template-columns: 25% auto 15%;
+  grid-template-columns: 25% auto 15% auto;
+  column-gap: 5px;
   font-size: var(--small-font);
   /* max-height: 120px; */
   align-items: center;
@@ -276,6 +277,19 @@ button {
 .cart-card__price {
   grid-row: 2;
   grid-column: 3;
+}
+
+.remove-cart-item-btn {
+  background-color: transparent;
+  color: black;
+  font-size: 18px;
+  grid-column: 4;
+  padding: 5px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #525b0f;
+  }
 }
 
 @media screen and (min-width: 500px) {
@@ -310,4 +324,48 @@ footer {
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 16px;
+/* Arrange the sorting label and dropdown side by side. */
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 1rem 0;
+}
+
+/* Make the dropdown easy to read and use. */
+.sort-container select {
+  padding: 8px 12px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 1rem;
+}
+/* position the cart badge relative to the backpack icon. */
+.cart a {
+  position: relative;
+  display: inline-block;
+}
+
+/* style the cart count as a small red circle. */
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #c62828;
+  color: white;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+
+/* hide the badge when the cart has no items. */
+.cart-count[hidden] {
+  display: none;
 }

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { logout, userStore } from "../js/auth.svelte";
 
   let visible = $state(false);
 
@@ -47,12 +48,18 @@
   >
     <img src="/images/noun-hiker.svg" alt="user icon" />
   </button>
-  
-  <nav class="user__menu" class:open={visible}>
-    <a href="#">Login</a>
-    <a href="#">Profile</a>
-    <a href="#">Orders</a>
-  </nav>
+
+  {#if userStore.isLoggedIn}
+    <nav class="user__menu" class:open={visible}>
+      <a href="/login" onclick={logout}>Logout</a>
+      <a href="/profile">Profile</a>
+      <a href="#">Orders</a>
+    </nav>
+  {:else}
+    <nav class="user__menu" class:open={visible}>
+      <a href="/login">Login</a>
+    </nav>
+  {/if}
 </div>
 
 <style>
