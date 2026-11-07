@@ -68,14 +68,13 @@ function cartItemTemplate(item: Product) {
   return newItem;
 }
 
-
 // increase or decrease the quantity of a product in the cart.
 function updateQuantity(productId: string, change: number) {
   const cart: Product[] = getLocalStorage("so-cart") || [];
 
   const updatedCart = cart.map((item) => {
     if (item.id === productId) {
-      const newQuantity = (item.quantity ?? 1) + change;
+      const newQuantity = Math.max(1, (item.quantity ?? 1) + change);
 
       return {
         ...item,
@@ -84,8 +83,7 @@ function updateQuantity(productId: string, change: number) {
     }
 
     return item;
-  })
-   .filter((item) => item.quantity > 0);
+  });
 
   // save the updated quantities.
   setLocalStorage("so-cart", updatedCart);
@@ -93,9 +91,6 @@ function updateQuantity(productId: string, change: number) {
   // refresh the cart display.
   renderCartContents();
 }
-
-
-
 
 function removeProductFromCart(product: Product) {
   const cart = getLocalStorage("so-cart") || [];
@@ -106,7 +101,7 @@ function removeProductFromCart(product: Product) {
 async function removeFromCartHandler(e: Event) {
   const target = e.target as HTMLButtonElement;
   if (target.dataset.id) {
-    console.log(target.dataset.id)
+    console.log(target.dataset.id);
     const product = await findProductById(target.dataset.id);
     removeProductFromCart(product);
   }
