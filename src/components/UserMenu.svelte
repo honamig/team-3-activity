@@ -58,8 +58,6 @@
   {:else}
     <nav class="user__menu" class:open={visible}>
       <a href="/login">Login</a>
-      <a href="/profile">Profile</a>
-      <a href="#">Orders</a>
     </nav>
   {/if}
 </div>
