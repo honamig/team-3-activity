@@ -1,12 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { checkAuth, logout, userStore } from "../js/auth.svelte";
 
   let visible = $state(false);
 
   function openUserMenu(e: MouseEvent) {
     // Stop the click from reaching the window listener immediately
+    
     e.stopPropagation();
     visible = !visible;
+    
   }
 
   // Named function required for removal
@@ -28,6 +31,8 @@
     window.addEventListener("scroll", closeMenu);
     window.addEventListener("keydown", handleKeydown);
 
+    checkAuth()
+
     // 2. Return Cleanup Function
     // Svelte runs this function automatically when the component unmounts
     return () => {
@@ -39,6 +44,9 @@
 </script>
 
 <div class="user">
+  {#if userStore.isLoggedIn}
+    <span>{userStore.user?.name}</span>
+  {/if}
   <button
     class="user__button"
     aria-label="user management"
@@ -47,11 +55,15 @@
   >
     <img src="/images/noun-hiker.svg" alt="user icon" />
   </button>
-  
+
   <nav class="user__menu" class:open={visible}>
-    <a href="#">Login</a>
-    <a href="#">Profile</a>
-    <a href="#">Orders</a>
+    {#if !userStore.isLoggedIn}
+      <a href="/login">Login</a>
+    {:else}
+      <a href="/profile">Profile</a>
+      <a href="/">Orders</a>
+      <button onclick={logout}>Logout</button>
+    {/if}
   </nav>
 </div>
 
