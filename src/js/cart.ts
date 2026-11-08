@@ -4,17 +4,32 @@ import { findProductById } from "./productData.mts";
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
-  if (cartItems != null) {
+  const cartFooter = document.querySelector(".cart-footer");
+
+  if (cartItems != null && cartItems.length > 0) {
     const htmlItems = cartItems.map((item: Product) => cartItemTemplate(item));
     const listEl = document.querySelector(".product-list");
     if (listEl) listEl.innerHTML = htmlItems.join("");
 
-    // attach event listeners to the remove-cart-item button
     listEl?.querySelectorAll(".remove-cart-item-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         removeFromCartHandler(e);
       });
     });
+
+    if (cartFooter) {
+      cartFooter.classList.remove("hide");
+      const total = cartItems.reduce(
+        (sum: number, item: Product) => sum + item.finalPrice,
+        0
+      );
+      const totalEl = document.querySelector(".cart-total");
+      if (totalEl) totalEl.textContent = `Total: $${total.toFixed(2)}`;
+    }
+  } else {
+    const listEl = document.querySelector(".product-list");
+    if (listEl) listEl.innerHTML = "";
+    cartFooter?.classList.add("hide");
   }
 }
 

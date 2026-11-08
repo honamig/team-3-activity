@@ -186,7 +186,15 @@ button {
   fill: gray;
 }
 
-/* End cart icon styles */
+/* cart footer / total styles */
+.hide {
+  display: none;
+}
+.cart-footer {
+  padding: 1em;
+  text-align: right;
+  font-weight: bold;
+}
 
 .mission {
   padding: 0 0.5em;
