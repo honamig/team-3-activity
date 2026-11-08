@@ -4,10 +4,24 @@
   import { getProducts } from "../js/productData.mts";
   import type { Product } from "../js/types.mts";
   import ProductSummary from "./ProductSummary.svelte";
+  import QuickViewModal from "./QuickViewModal.svelte";
   import { getParam } from "../js/utils.mjs";
 
   let category = $state("");
   let products: Product[] = $state([]);
+
+  let viewProduct = $state(null)
+  let isViewModalOpen = $state(false)
+
+  function handleOpenQuickView(product) {
+    isViewModalOpen = true;
+    viewProduct = product
+  }
+
+  function handleCloseQuickView() {
+    viewProduct = null;
+    isViewModalOpen = false;
+  }
 
   // store the sorting option selected by the customer.
   let sortBy = $state("name-asc");
@@ -67,6 +81,8 @@
 <!-- Display the sorted products. -->
 <ul class="product-list">
   {#each sortedProducts as product (product.id)}
-    <ProductSummary {product} />
+    <ProductSummary onViewClick={handleOpenQuickView} {product} />
   {/each}
 </ul>
+
+<QuickViewModal onCloseView={handleCloseQuickView} product={viewProduct} isOpen={isViewModalOpen} />
