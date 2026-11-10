@@ -85,7 +85,7 @@ function updateQuantity(productId: string, change: number) {
 
     return item;
   })
-   .filter((item) => (item.quantity ?? 1) > 0);
+   .filter((item) => item.quantity > 0);
 
   // save the updated quantities.
   setLocalStorage("so-cart", updatedCart);
