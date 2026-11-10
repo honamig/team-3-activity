@@ -1,6 +1,7 @@
 export interface Product {
   _id: string;
   id: string;
+  quantity?: number;
   isClearance: boolean;
   category: ProductCategory;
   isNew: boolean;
