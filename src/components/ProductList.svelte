@@ -4,6 +4,7 @@
   import { getProducts } from "../js/productData.mts";
   import type { Product } from "../js/types.mts";
   import ProductSummary from "./ProductSummary.svelte";
+  import QuickViewModal from "./QuickViewModal.svelte";
   import { getParam } from "../js/utils.mjs";
 
   let category = $state("");
@@ -18,6 +19,19 @@ let filteredProducts = $derived(
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 );
+
+  let viewProduct = $state(null)
+  let isViewModalOpen = $state(false)
+
+  function handleOpenQuickView(product) {
+    isViewModalOpen = true;
+    viewProduct = product
+  }
+
+  function handleCloseQuickView() {
+    viewProduct = null;
+    isViewModalOpen = false;
+  }
 
   // store the sorting option selected by the customer.
   let sortBy = $state("name-asc");
@@ -84,13 +98,18 @@ let filteredProducts = $derived(
   </select>
 </div>
 
+
+
 <!-- Display the matching and sorted products. -->
 {#if sortedProducts.length > 0}
   <ul class="product-list">
     {#each sortedProducts as product (product.id)}
-      <ProductSummary {product} />
+      <ProductSummary onViewClick={handleOpenQuickView} {product} />
     {/each}
   </ul>
 {:else}
   <p>No products found.</p>
 {/if}
+
+<QuickViewModal onCloseView={handleCloseQuickView} product={viewProduct} isOpen={isViewModalOpen} />
+
