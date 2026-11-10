@@ -22,7 +22,21 @@ const products = defineCollection({
     );
     const response = await fetch(url);
     const body = await response.text();
-    const responseDetails = `${url}: HTTP ${response.status} ${response.statusText}, content-type ${response.headers.get("content-type") ?? "unknown"}`;
+    const responseUrl = new URL(response.url);
+    const responseDetails = [
+      `requested URL ${url}`,
+      `requested host ${url.host}`,
+      `requested path ${url.pathname}`,
+      `response host ${responseUrl.host}`,
+      `response path ${responseUrl.pathname}`,
+      `redirected ${response.redirected}`,
+      `deploy context ${process.env.CONTEXT ?? "local"}`,
+      `HTTP ${response.status} ${response.statusText}`,
+      `content-type ${response.headers.get("content-type") ?? "unknown"}`,
+      `server ${response.headers.get("server") ?? "unknown"}`,
+      `Render request ID ${response.headers.get("rndr-id") ?? "none"}`,
+      `Cloudflare request ID ${response.headers.get("cf-ray") ?? "none"}`,
+    ].join(", ");
 
     if (!response.ok) {
       throw new Error(

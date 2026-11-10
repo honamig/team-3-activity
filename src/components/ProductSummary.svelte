@@ -18,9 +18,6 @@
   <button onclick={() => onViewClick(product)} class="quick-view-btn"
     >Quick View</button
   >
-  <button onclick={() => onViewClick(product)} class="quick-view-btn"
-    >Quick View</button
-  >
 </li>
 
 <style>

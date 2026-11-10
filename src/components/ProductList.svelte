@@ -32,19 +32,6 @@
     ),
   );
 
-  let viewProduct = $state(null)
-  let isViewModalOpen = $state(false)
-
-  function handleOpenQuickView(product) {
-    isViewModalOpen = true;
-    viewProduct = product
-  }
-
-  function handleCloseQuickView() {
-    viewProduct = null;
-    isViewModalOpen = false;
-  }
-
   // store the sorting option selected by the customer.
   let sortBy = $state("name-asc");
 
@@ -127,6 +114,3 @@
 {:else}
   <p>No products found.</p>
 {/if}
-
-<QuickViewModal onCloseView={handleCloseQuickView} product={viewProduct} isOpen={isViewModalOpen} />
-
