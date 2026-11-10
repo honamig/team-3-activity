@@ -8,6 +8,16 @@
 
   let category = $state("");
   let products: Product[] = $state([]);
+  
+// store what the user types in the search box
+let searchTerm = $state("");
+
+// filter products based on what the user searches
+let filteredProducts = $derived(
+  products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+);
 
   // store the sorting option selected by the customer.
   let sortBy = $state("name-asc");
@@ -15,7 +25,7 @@
   // Sort a copy of the products without changing the original array.
   // Svelte updates this list when the products or sorting option changes.
   let sortedProducts = $derived(
-    [...products].sort((a, b) => {
+    [...filteredProducts].sort((a, b) => {
       // Sort names from A to Z.
       if (sortBy === "name-asc") {
         return a.name.localeCompare(b.name);
@@ -52,6 +62,16 @@
 
 <h2>Top products: {category}</h2>
 
+<!-- search box for products -->
+<div class="product-search">
+  <input
+  type="search"
+  placeholder="Search products..."
+  bind:value={searchTerm}
+  />
+</div>
+
+
 <!-- Let customers choose how the products are sorted. -->
 <div class="sort-container">
   <label for="sort-products">Sort by:</label>
@@ -64,9 +84,13 @@
   </select>
 </div>
 
-<!-- Display the sorted products. -->
-<ul class="product-list">
-  {#each sortedProducts as product (product.id)}
-    <ProductSummary {product} />
-  {/each}
-</ul>
+<!-- Display the matching and sorted products. -->
+{#if sortedProducts.length > 0}
+  <ul class="product-list">
+    {#each sortedProducts as product (product.id)}
+      <ProductSummary {product} />
+    {/each}
+  </ul>
+{:else}
+  <p>No products found.</p>
+{/if}
