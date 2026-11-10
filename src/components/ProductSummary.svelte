@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { Product } from "../js/types.mts";
   import DiscountTag from "./DiscountTag.svelte";
-  let { product, onViewClick } = $props();
+  let { product, onViewClick }: { product: Product; onViewClick: Function } =
+    $props();
 </script>
 
 <li class="product-card">
@@ -9,12 +10,17 @@
     <img src={product.images.primaryLarge} alt={product.nameWithoutBrand} />
     <h3 class="card__brand">{product.brand.name}</h3>
     <h2 class="card__name">{product.nameWithoutBrand}</h2>
-    <p class="product-card__price">${product.finalPrice}
-      <DiscountTag product={product}/>
+    <p class="product-card__price">
+      ${product.finalPrice}
+      <DiscountTag {product} />
     </p>
-    </a
+  </a>
+  <button onclick={() => onViewClick(product)} class="quick-view-btn"
+    >Quick View</button
   >
-  <button onclick={() => onViewClick(product)} class="quick-view-btn">Quick View</button>
+  <button onclick={() => onViewClick(product)} class="quick-view-btn"
+    >Quick View</button
+  >
 </li>
 
 <style>

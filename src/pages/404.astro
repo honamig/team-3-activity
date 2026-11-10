@@ -1,0 +1,12 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Oops!";
+const pathname = Astro.url.pathname;
+---
+
+<Layout {title}>
+  <h2>Page not found</h2>
+  <p>We're sorry, but we don't have a page at {pathname}</p>
+  <a href="/product-list/index.html">Go to product list</a>
+</Layout>
