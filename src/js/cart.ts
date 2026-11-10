@@ -75,7 +75,7 @@ function updateQuantity(productId: string, change: number) {
 
   const updatedCart = cart.map((item) => {
     if (item.id === productId) {
-      const newQuantity = Math.max(1, (item.quantity ?? 1) + change);
+      const newQuantity = (item.quantity ?? 1) + change;
 
       return {
         ...item,
@@ -84,7 +84,8 @@ function updateQuantity(productId: string, change: number) {
     }
 
     return item;
-  });
+  })
+   .filter((item) => (item.quantity ?? 1) > 0);
 
   // save the updated quantities.
   setLocalStorage("so-cart", updatedCart);
