@@ -10,11 +10,12 @@
     <img src={product.images.primaryLarge} alt={product.nameWithoutBrand} />
     <h3 class="card__brand">{product.brand.name}</h3>
     <h2 class="card__name">{product.nameWithoutBrand}</h2>
-    <p class="product-card__price">${product.finalPrice}</p></a
+    <p class="product-card__price">${product.finalPrice}
+      <DiscountTag product={product}/>
+    </p>
+    </a
   >
-  <button onclick={() => onViewClick(product)} class="quick-view-btn"
-    >Quick View</button
-  >
+  <button onclick={() => onViewClick(product)} class="quick-view-btn">Quick View</button>
 </li>
 
 <style>
