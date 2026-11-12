@@ -85,7 +85,7 @@
         required
       />
       <p class="error-message" hidden={!passwordValidationError}>
-        Password input must be at least 12 characters long
+        Password input must be at least 6 characters long
       </p>
     </label>
     <button disabled={!email || !password} type="submit">Log in</button>

@@ -1,4 +1,4 @@
-import type { User } from "./types.mts";
+import type { UserStore } from "./types.mts";
 import { getLocalStorage, setLocalStorage } from "./utils.mts";
 
 const baseUrl = import.meta.env.PUBLIC_SERVER_URL;
@@ -8,16 +8,6 @@ interface TokenObject {
     _id: string;
     email: string;
     name: string;
-  };
-  token: string;
-}
-
-interface UserStore {
-  isLoggedIn: boolean;
-  user?: {
-    name: string;
-    email: string;
-    _id: string;
   };
   token: string;
 }
