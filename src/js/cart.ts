@@ -4,17 +4,32 @@ import { findProductById } from "./productData.mts";
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
-  if (cartItems != null) {
+  const cartFooter = document.querySelector(".cart-footer");
+
+  if (cartItems != null && cartItems.length > 0) {
     const htmlItems = cartItems.map((item: Product) => cartItemTemplate(item));
     const listEl = document.querySelector(".product-list");
     if (listEl) listEl.innerHTML = htmlItems.join("");
 
-    // attach event listeners to the remove-cart-item button
     listEl?.querySelectorAll(".remove-cart-item-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         removeFromCartHandler(e);
       });
     });
+
+    if (cartFooter) {
+      cartFooter.classList.remove("hide");
+      const total = cartItems.reduce(
+        (sum: number, item: Product) => sum + item.finalPrice,
+        0
+      );
+      const totalEl = document.querySelector(".cart-total");
+      if (totalEl) totalEl.textContent = `Total: $${total.toFixed(2)}`;
+    }
+  } else {
+    const listEl = document.querySelector(".product-list");
+    if (listEl) listEl.innerHTML = "";
+    cartFooter?.classList.add("hide");
 
     // increase quantity when the + button is clicked.
     listEl?.querySelectorAll(".increase-qty-btn").forEach((btn) => {
@@ -39,6 +54,7 @@ function renderCartContents() {
     });
   }
 }
+
 function cartItemTemplate(item: Product) {
   const newItem = `<li class="cart-card divider">
 
@@ -85,7 +101,7 @@ function updateQuantity(productId: string, change: number) {
 
     return item;
   })
-   .filter((item) => item.quantity > 0);
+   .filter((item) => (item.quantity ?? 1) > 0);
 
   // save the updated quantities.
   setLocalStorage("so-cart", updatedCart);
@@ -93,9 +109,6 @@ function updateQuantity(productId: string, change: number) {
   // refresh the cart display.
   renderCartContents();
 }
-
-
-
 
 function removeProductFromCart(product: Product) {
   const cart = getLocalStorage("so-cart") || [];

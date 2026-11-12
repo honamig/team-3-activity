@@ -186,7 +186,15 @@ button {
   fill: gray;
 }
 
-/* End cart icon styles */
+/* cart footer / total styles */
+.hide {
+  display: none;
+}
+.cart-footer {
+  padding: 1em;
+  text-align: right;
+  font-weight: bold;
+}
 
 .mission {
   padding: 0 0.5em;
@@ -324,6 +332,8 @@ footer {
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 16px;
+}
+
 /* Arrange the sorting label and dropdown side by side. */
 .sort-container {
   display: flex;
@@ -393,4 +403,16 @@ footer {
 /* button hover */
 .cart-card__quantity button:hover {
   background-color: #ddd;
+}
+
+/* cart animation */
+@keyframes cart-shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+  75% { transform: rotate(-10deg); }
+}
+
+.cart a.cart-animate svg {
+  animation: cart-shake 0.6s ease-in-out;
 }
