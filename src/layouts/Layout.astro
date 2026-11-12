@@ -59,13 +59,16 @@ let { title } = Astro.props;
     <footer>&copy;NOT a real business</footer>
 
     <script>
-      import { updateCartCount } from "../js/cartCount";
+      import { updateCartCount, animateCart } from "../js/cartCount";
 
       // display the saved cart count when the page loads.
       updateCartCount();
 
-      // update the badge immediately when a product is added.
-      window.addEventListener("cart-updated", updateCartCount);
+      // update the badge and animate the icon when a product is added.
+      window.addEventListener("cart-updated", () => {
+        updateCartCount();
+        animateCart();
+      });
 
       // update the badge if the cart changes in another browser tab.
       window.addEventListener("storage", (event) => {
