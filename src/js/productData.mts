@@ -23,3 +23,9 @@ export async function findProductById(id: string) {
   console.log("Finding product by id " + product.id);
   return product;
 }
+
+export async function getRecommendedProducts(id: string) {
+  const response = await fetch(baseUrl + `products/${id}/recommended`);
+  const recommendedProducts = await convertToJson(response)
+  return recommendedProducts
+}

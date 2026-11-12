@@ -88,7 +88,7 @@ function cartItemTemplate(item: Product) {
 // increase or decrease the quantity of a product in the cart.
 function updateQuantity(productId: string, change: number) {
   const cart: Product[] = getLocalStorage("so-cart") || [];
-
+  console.log("clicked")
   const updatedCart = cart.map((item) => {
     if (item.id === productId) {
       const newQuantity = (item.quantity ?? 1) + change;
