@@ -324,6 +324,7 @@ footer {
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 16px;
+}
 /* Arrange the sorting label and dropdown side by side. */
 .sort-container {
   display: flex;
@@ -393,4 +394,19 @@ footer {
 /* button hover */
 .cart-card__quantity button:hover {
   background-color: #ddd;
+}
+
+/* Breadcrumb navigation */
+.breadcrumbs {
+  padding: 12px 20px;
+  font-size: 14px;
+}
+
+.breadcrumbs a {
+  color: #333;
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
 }
