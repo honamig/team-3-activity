@@ -21,7 +21,7 @@ function addProductToCart(product: Product) {
 
   setLocalStorage("so-cart", cart);
 
-  // update the cart number immediately.
+  // Update the cart number immediately.
   window.dispatchEvent(new Event("cart-updated"));
 }
 
