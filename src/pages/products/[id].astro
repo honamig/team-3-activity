@@ -32,11 +32,28 @@ const title = product.data.name;
 
     <h2 class="divider">{product.data.nameWithoutBrand}</h2>
 
-    <img
-      class="divider"
-      src={product.data.images.primaryLarge}
-      alt={product.data.name}
-    />
+
+    <picture>
+      <!-- Medium image -->
+      <source
+        media="(max-width: 600px)"
+        srcset={product.data.images.primaryMedium}
+      />
+
+      <!-- Large image -->
+      <source
+        media="(max-width: 1024px)"
+        srcset={product.data.images.primaryLarge}
+      />
+
+      <!-- Extra large -->
+      <img
+        class="divider"
+        src={product.data.images.primaryExtraLarge}
+        alt={product.data.name}
+      />
+    </picture>
+
 
     <p class="product-card__price">
       Price: ${product.data.listPrice}
