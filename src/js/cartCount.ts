@@ -26,3 +26,17 @@ export function updateCartCount(): void {
   // hide the badge when the cart is empty.
   badge.hidden = count === 0;
 }
+
+// Animate the cart icon when a product is added.
+export function animateCart(): void {
+  const cartLink = document.querySelector(".cart a");
+
+  if (!cartLink) return;
+
+  // Remove the animation class.
+  cartLink.classList.remove("cart-animate");
+
+  // Restart the animation.
+  cartLink.getBoundingClientRect();
+  cartLink.classList.add("cart-animate");
+}
