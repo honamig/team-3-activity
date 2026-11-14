@@ -24,8 +24,8 @@ let filteredProducts = $derived(
   let isViewModalOpen = $state(false)
 
   function handleOpenQuickView(product) {
-    isViewModalOpen = true;
-    viewProduct = product
+    isViewModalOpen = true
+    viewProduct = product;
   }
 
   function handleCloseQuickView() {
@@ -73,6 +73,11 @@ let filteredProducts = $derived(
 
   onMount(init);
 </script>
+<!-- show the current product category and number of items. -->
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <a href="/">Product Category</a>
+  <span> → {category || "Tents"} → ({products.length} items)</span>
+</nav>
 
 <h2>Top products: {category}</h2>
 
