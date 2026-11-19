@@ -3,14 +3,13 @@
   import type { Product } from "../js/types.mts";
   import { getLocalStorage, setLocalStorage } from "../js/utils.mts";
 
+  let { onCartChange }: { onCartChange?: (items: Product[]) => void } =
+    $props();
   let cartItems: Product[] = $state([]);
-
-  onMount(() => {
-    cartItems = getLocalStorage("so-cart") ?? [];
-  });
 
   function saveCart() {
     setLocalStorage("so-cart", cartItems);
+    onCartChange?.(cartItems);
     window.dispatchEvent(new Event("cart-updated"));
   }
 
@@ -30,44 +29,49 @@
     cartItems = cartItems.filter((item) => item.id !== productId);
     saveCart();
   }
+
+  onMount(() => {
+    cartItems = getLocalStorage("so-cart") ?? [];
+    onCartChange?.(cartItems);
+  });
 </script>
 
-  <ul class="product-list">
-    {#each cartItems as item}
-      <li class="cart-card">
-        <a href="/products/{item.id}" class="cart-card__image">
-          <img src={item.images.primaryMedium} alt={item.name} />
-        </a>
-        <a href="/products/{item.id}" class="cart-card__name" title={item.name}>
-          <h2 class="card__name">{item.name}</h2>
-        </a>
-        <p class="cart-card__color">Color: {item.colors[0].colorName}</p>
+<ul class="product-list">
+  {#each cartItems as item}
+    <li class="cart-card">
+      <a href="/products/{item.id}" class="cart-card__image">
+        <img src={item.images.primaryMedium} alt={item.name} />
+      </a>
+      <a href="/products/{item.id}" class="cart-card__name" title={item.name}>
+        <h2 class="card__name">{item.name}</h2>
+      </a>
+      <p class="cart-card__color">Color: {item.colors[0].colorName}</p>
 
-        <div class="cart-card__quantity">
-          <button
-            type="button"
-            class="decrease-qty-btn"
-            onclick={() => updateQuantity(item.id, -1)}
-            aria-label="Decrease quantity">−</button
-          >
-          <span>Qty: {item.quantity ?? 1}</span>
-          <button
-            type="button"
-            class="increase-qty-btn"
-            onclick={() => updateQuantity(item.id, 1)}
-            aria-label="Increase quantity">+</button
-          >
-        </div>
-        <p class="cart-card__price">${item.finalPrice.toFixed(2)}</p>
+      <div class="cart-card__quantity">
         <button
           type="button"
-          class="remove-cart-item-btn"
-          onclick={() => removeFromCart(item.id)}
-          aria-label="Remove {item.name} from cart">X</button
+          class="decrease-qty-btn"
+          onclick={() => updateQuantity(item.id, -1)}
+          aria-label="Decrease quantity">−</button
         >
-      </li>
-    {/each}
-  </ul>
+        <span>Qty: {item.quantity ?? 1}</span>
+        <button
+          type="button"
+          class="increase-qty-btn"
+          onclick={() => updateQuantity(item.id, 1)}
+          aria-label="Increase quantity">+</button
+        >
+      </div>
+      <p class="cart-card__price">${item.finalPrice.toFixed(2)}</p>
+      <button
+        type="button"
+        class="remove-cart-item-btn"
+        onclick={() => removeFromCart(item.id)}
+        aria-label="Remove {item.name} from cart">X</button
+      >
+    </li>
+  {/each}
+</ul>
 
 <style>
   .product-list {
