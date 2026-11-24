@@ -1,4 +1,3 @@
-
 <script lang="ts">
   import { onMount } from "svelte";
   import { getProducts } from "../js/productData.mts";
@@ -9,23 +8,23 @@
 
   let category = $state("");
   let products: Product[] = $state([]);
-  
-// store what the user types in the search box
-let searchTerm = $state("");
 
-// filter products based on what the user searches
-let filteredProducts = $derived(
-  products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-);
+  // store what the user types in the search box
+  let searchTerm = $state("");
 
-  let viewProduct = $state(null)
-  let isViewModalOpen = $state(false)
+  // filter products based on what the user searches
+  let filteredProducts = $derived(
+    products.filter((product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    ),
+  );
 
-  function handleOpenQuickView(product) {
+  let viewProduct = $state();
+  let isViewModalOpen = $state(false);
+
+  function handleOpenQuickView(product: Product) {
     isViewModalOpen = true;
-    viewProduct = product
+    viewProduct = product;
   }
 
   function handleCloseQuickView() {
@@ -61,7 +60,7 @@ let filteredProducts = $derived(
       }
 
       return 0;
-    })
+    }),
   );
 
   // Load products from the selected category.
@@ -79,12 +78,11 @@ let filteredProducts = $derived(
 <!-- search box for products -->
 <div class="product-search">
   <input
-  type="search"
-  placeholder="Search products..."
-  bind:value={searchTerm}
+    type="search"
+    placeholder="Search products..."
+    bind:value={searchTerm}
   />
 </div>
-
 
 <!-- Let customers choose how the products are sorted. -->
 <div class="sort-container">
@@ -98,8 +96,6 @@ let filteredProducts = $derived(
   </select>
 </div>
 
-
-
 <!-- Display the matching and sorted products. -->
 {#if sortedProducts.length > 0}
   <ul class="product-list">
@@ -111,5 +107,8 @@ let filteredProducts = $derived(
   <p>No products found.</p>
 {/if}
 
-<QuickViewModal onCloseView={handleCloseQuickView} product={viewProduct} isOpen={isViewModalOpen} />
-
+<QuickViewModal
+  onCloseView={handleCloseQuickView}
+  product={viewProduct}
+  isOpen={isViewModalOpen}
+/>

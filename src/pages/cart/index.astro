@@ -6,9 +6,85 @@ const title = "Cart";
 
 <Layout title={title}>
   <main class="divider">
-    <section class="products">
+    <section class="products" data-cart-page>
       <h2>My Cart</h2>
-      <Cart client:load />
+      <div class="cart-panel">
+        <Cart client:load />
+        <p class="cart-empty" data-cart-empty hidden>Your cart is empty.</p>
+        <div class="cart-footer" data-cart-summary hidden>
+          <p class="cart-total" aria-live="polite">
+            Subtotal: $<span data-cart-subtotal>0.00</span>
+          </p>
+          <a class="checkout-button" href="/checkout">Proceed to Checkout</a>
+        </div>
+      </div>
     </section>
   </main>
 </Layout>
+
+<script>
+  import { getLocalStorage } from "../../js/utils.mts";
+  import type { Product } from "../../js/types.mts";
+
+  function updateCartSummary() {
+    const cartPage = document.querySelector("[data-cart-page]");
+    if (!cartPage) return;
+
+    const cartItems: Product[] = getLocalStorage("so-cart") ?? [];
+    const total = cartItems.reduce(
+      (sum, item) => sum + item.finalPrice * (item.quantity ?? 1),
+      0,
+    );
+    const subtotal = cartPage.querySelector("[data-cart-subtotal]");
+    const summary = cartPage.querySelector<HTMLElement>("[data-cart-summary]");
+    const emptyMessage = cartPage.querySelector<HTMLElement>("[data-cart-empty]");
+
+    if (subtotal) subtotal.textContent = total.toFixed(2);
+    if (summary) summary.hidden = cartItems.length === 0;
+    if (emptyMessage) emptyMessage.hidden = cartItems.length > 0;
+  }
+
+  updateCartSummary();
+  window.addEventListener("cart-updated", updateCartSummary);
+  document.addEventListener("astro:page-load", updateCartSummary);
+</script>
+
+<style>
+  .cart-panel {
+    border: 1px solid var(--light-grey);
+    border-radius: 0.65rem;
+    background-color: white;
+  }
+
+  .cart-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-top: 1px solid var(--light-grey);
+  }
+
+  .cart-footer[hidden] {
+    display: none;
+  }
+
+  .cart-total {
+    margin: 0;
+  }
+
+  .checkout-button {
+    max-width: 100%;
+    padding: 0.5em 2em;
+    color: white;
+    background-color: var(--secondary-color);
+    font-size: var(--large-font);
+    text-align: center;
+  }
+
+  .cart-empty {
+    margin: 0;
+    padding: 1rem;
+  }
+</style>

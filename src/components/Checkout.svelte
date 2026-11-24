@@ -1,10 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { UserStore, USState } from "../js/types.mts";
+  import type { Product, UserStore, USState } from "../js/types.mts";
   import { USStates } from "../js/types.mts";
   import { getLocalStorage } from "../js/utils.mts";
+  import Cart from "./Cart.svelte";
+  import type { FormEventHandler } from "svelte/elements";
+  import Alert from "./Alert.svelte";
+
+  const baseUrl = import.meta.env.PUBLIC_SERVER_URL;
 
   let user;
+  let userStore: UserStore;
   let nameList = $state([""]);
   let [firstName, lastName] = $derived(nameList);
   let street = $state("");
@@ -17,7 +23,19 @@
   let expiration = $state("");
   let securityCode = $state("");
   let cardDigits = $derived(cardNumber.replace(/\D/g, ""));
-  let [expirtaionMonth, expirationYear] = $derived(expiration.split("/"));
+  let [expirationMonth, expirationYear] = $derived(expiration.split("/"));
+  let cartItems: Product[] = $state([]);
+  let subtotal = $derived(
+    cartItems.reduce(
+      (sum, item) => sum + item.finalPrice * (item.quantity ?? 1),
+      0,
+    ),
+  );
+  let shipping = $derived(10 + 2 * (cartItems.length - 1));
+  let taxes = $derived(subtotal * 0.06);
+  let total = $derived((subtotal + shipping + taxes).toFixed(2));
+  let sameAddress = $state(false);
+  let orderSuccess = $state(false);
 
   function formatCardNumber(digits: string): string {
     return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
@@ -68,8 +86,33 @@
     input.setSelectionRange(newCursor, newCursor);
   }
 
+  async function handleCheckout(event: Event) {
+    event.preventDefault();
+    let form = document.forms.namedItem("checkout");
+    if (form == null) {
+      throw new Error("Form not found");
+    }
+    let formData = new FormData(form);
+    formData.set("cardNumber", cardDigits);
+    formData.append("cartItems", JSON.stringify(cartItems));
+    console.log(formData);
+    const response = await fetch(`${baseUrl}checkout`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${userStore.token}`,
+      },
+      body: formData,
+    });
+    const success = response.ok;
+    if (!success) {
+      throw new Error(`${response.status} Error: ${response.statusText}`);
+    } else {
+      orderSuccess = true;
+    }
+  }
+
   onMount(() => {
-    const userStore = getLocalStorage("so-user") as UserStore;
+    userStore = getLocalStorage("so-user") as UserStore;
     if (!userStore.user) {
       window.location.href = "/login";
       throw new Error("User is not logged in");
@@ -78,13 +121,94 @@
     if (user.name) {
       nameList = user.name.split(" ");
     }
+    cartItems = getLocalStorage("so-cart");
+    if (cartItems.length < 1) {
+      window.location.href = "/product-list";
+      throw new Error("No items in cart");
+    }
   });
 
   console.log($inspect(usState));
 </script>
 
+{#snippet addressFields()}
+  <section class="dual-container">
+    <div class="input-container">
+      <input
+        type="text"
+        name="street"
+        bind:value={street}
+        placeholder=" "
+        required
+      />
+      <label for="street">Street Address</label>
+    </div>
+    <div class="input-container">
+      <input
+        type="text"
+        name="street2"
+        bind:value={street2}
+        placeholder=" "
+        required
+      />
+      <label for="street2">Street Address 2</label>
+    </div>
+  </section>
+  <section class="tri-container">
+    <div class="input-container">
+      <input type="text" name="city" bind:value={city} placeholder=" " />
+      <label for="city">City</label>
+    </div>
+    <div class="input-container">
+      <select
+        style:width="100%"
+        style:margin-bottom="1em"
+        name="usState"
+        bind:value={usState}
+        placeholder=""
+        required
+      >
+        {#each USStates as usStateString}
+          <option>
+            {usStateString}
+          </option>
+        {/each}
+      </select>
+      <label for="usState">State</label>
+    </div>
+    <div class="input-container">
+      <input
+        type="text"
+        autocomplete="postal-code"
+        inputmode="numeric"
+        name="postalCode"
+        bind:value={postalCode}
+        oninput={(event) =>
+          handleDigitInput(event.currentTarget, 6, formatDigits)}
+        required
+      />
+      <label for="postalCode">Postal Code</label>
+    </div>
+  </section>
+  <div class="input-container full-width">
+    <input
+      type="text"
+      name="country"
+      bind:value={country}
+      placeholder=" "
+      required
+    />
+    <label for="country">Country</label>
+  </div>
+{/snippet}
+
 {#snippet checkoutForm()}
-  <form class="majority" name="checkout">
+  <form
+    class="majority"
+    name="checkout"
+    id="checkout"
+    onsubmit={handleCheckout}
+  >
     <fieldset name="personalInfo">
       <h2>Personal Information</h2>
       <section class="dual-container">
@@ -112,76 +236,9 @@
     </fieldset>
     <fieldset name="Shipping Address">
       <h2>Shipping Address</h2>
-      <section class="dual-container">
-        <div class="input-container">
-          <input
-            type="text"
-            name="street"
-            bind:value={street}
-            placeholder=" "
-            required
-          />
-          <label for="street">Street Address</label>
-        </div>
-        <div class="input-container">
-          <input
-            type="text"
-            name="street2"
-            bind:value={street2}
-            placeholder=" "
-            required
-          />
-          <label for="street2">Street Address 2</label>
-        </div>
-      </section>
-      <section class="tri-container">
-        <div class="input-container">
-          <input type="text" name="city" bind:value={city} placeholder=" " />
-          <label for="city">City</label>
-        </div>
-        <div class="input-container">
-          <select
-            style:width="100%"
-            style:margin-bottom="1em"
-            name="usState"
-            bind:value={usState}
-            placeholder=""
-            required
-          >
-            {#each USStates as usStateString}
-              <option>
-                {usStateString}
-              </option>
-            {/each}
-          </select>
-          <label for="usState">State</label>
-        </div>
-        <div class="input-container">
-          <input
-            type="text"
-            autocomplete="postal-code"
-            inputmode="numeric"
-            name="postalCode"
-            bind:value={postalCode}
-            oninput={(event) =>
-              handleDigitInput(event.currentTarget, 6, formatDigits)}
-            required
-          />
-          <label for="postalCode">Postal Code</label>
-        </div>
-      </section>
-      <div class="input-container full-width">
-        <input
-          type="text"
-          name="country"
-          bind:value={country}
-          placeholder=" "
-          required
-        />
-        <label for="country">Country</label>
-      </div>
+      {@render addressFields()}
     </fieldset>
-    <fieldset name="paymentInfo">
+    <fieldset name="cardInfo">
       <h2>Payment Information</h2>
       <div class="input-container">
         <input
@@ -232,23 +289,85 @@
         </div>
       </section>
     </fieldset>
+    <!-- <fieldset name="billingInfo">
+      <h2>Billing Address</h2>
+      <div class="checkbox-container">
+        <input
+          id="sameAddress"
+          type="checkbox"
+          name="sameAddress"
+          bind:checked={sameAddress}
+        />
+        <label for="sameAddress">Same as shipping address</label>
+      </div>
+      {#if !sameAddress}
+        {@render addressFields()}
+      {/if}
+    </fieldset> -->
   </form>
 {/snippet}
 
-<div class="checkout-container">
-  {@render checkoutForm()}
-  <div class="checkout-summary">
-    <div class="product"></div>
-    <div class="cost-detail">
-      <p>Subtotal:</p>
-      <p style:justify-content="end">$</p>
-    </div>
-    <p class="cost-detail">Taxes: $</p>
-    <p class="cost-detail">Shipping: $</p>
-    <hr class="divider" />
-    <p class="cost-detail">Total: $</p>
+{#if !orderSuccess}
+  <div class="checkout-container">
+    {@render checkoutForm()}
+    <section class="checkout-summary">
+      <div class="no-margin cart">
+        <Cart
+          onCartChange={(items) => {
+            cartItems = items;
+          }}
+        />
+      </div>
+      <div class="cost-detail">
+        <p class="no-margin">Subtotal:</p>
+        <p
+          class="no-margin"
+          style:justify-self="end"
+          style:padding-right="1rem"
+        >
+          ${subtotal.toFixed(2)}
+        </p>
+      </div>
+      <div class="cost-detail">
+        <p class="no-margin">Shipping:</p>
+        <p
+          class="no-margin"
+          style:justify-self="end"
+          style:padding-right="1rem"
+        >
+          + ${shipping}
+        </p>
+      </div>
+      <div class="cost-detail">
+        <p class="no-margin">Taxes:</p>
+        <p
+          class="no-margin"
+          style:justify-self="end"
+          style:padding-right="1rem"
+        >
+          + ${taxes.toFixed(2)}
+        </p>
+      </div>
+      <hr class="divider" />
+      <div class="cost-detail">
+        <p class="no-margin">Total:</p>
+        <p
+          class="no-margin"
+          style:justify-self="end"
+          style:padding-right="1rem"
+        >
+          ${total}
+        </p>
+      </div>
+      <button onclick={handleCheckout} style:margin-top="3rem"
+        >Finish and Pay</button
+      >
+    </section>
   </div>
-</div>
+{:else}
+  <h2>Order Placed Successfully</h2>
+  <a href="/">Back to homepage</a>
+{/if}
 
 <style>
   .checkout-container {
@@ -271,7 +390,8 @@
 
   .cost-detail {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     margin: 0.125rem;
   }
 
@@ -281,6 +401,11 @@
     width: auto;
     margin-right: 0.25rem;
     margin-left: 0.25rem;
+    grid-column: span 2;
+  }
+
+  .no-margin {
+    margin: 0;
   }
 
   fieldset {
@@ -301,6 +426,16 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
+  }
+
+  .checkbox-container {
+    width: 50%;
+    margin-bottom: 1rem;
+  }
+  .checkbox-container input {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
   }
 
   .full-width {
@@ -347,5 +482,10 @@
     top: 0.5rem;
     transform: translateY(0);
     font-size: 0.75rem;
+  }
+
+  .cart {
+    border-bottom: 1px solid #d0d0d0;
+    margin-bottom: 0.5rem;
   }
 </style>
